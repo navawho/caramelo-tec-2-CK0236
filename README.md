@@ -13,16 +13,18 @@
 # Trabalho final de Técnicas de Programação II 👨‍💻
 
 ## Descrição
+
+### Escopo
 O caramelo é um sistema de adoção de animais livre 🐈🐕.
 
 Cada usuário pode tanto adotar animais quanto cadastrar animais para serem adotados.
 
-## Equipe
+### Equipe
 - Matheus Navarro - 411605
 - Daniele Cavalcante - 414624
 - Pedro Felippe - 418806
 
-## Linguagens
+### Linguagens
 - Frontend
   - JavaScript
   - ReactJs
@@ -30,10 +32,10 @@ Cada usuário pode tanto adotar animais quanto cadastrar animais para serem adot
   - Java
   - Spring
 
-## Convenções de commit
+### Convenções de commit
 Convenção sendo utilizada:
 https://www.conventionalcommits.org/en/v1.0.0/
 
-## Mockup
+### Mockup
 Layout do Front feito com o Figma:
 https://www.figma.com/file/xJx8m4mjgykL1qD7eltCqu/Caramelo?node-id=0%3A1
