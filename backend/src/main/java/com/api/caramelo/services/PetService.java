@@ -65,10 +65,6 @@ public class PetService implements IPetService {
             throw new BusinessRuleException("Usuário com esse token não existe.");
         }
 
-        if (userId != petRepository.findPetById(petId).getUser().getId()) {
-            throw new BusinessRuleException("Um usuário não pode atualizar um Pet de outro usuário");
-        }
-
         Optional<Pet> optionalPet = petRepository.findById(petId);
 
         if (optionalPet.isEmpty()) {
@@ -76,6 +72,10 @@ public class PetService implements IPetService {
         }
 
         Pet pet = optionalPet.get();
+
+        if (userId != pet.getUser().getId()) {
+            throw new BusinessRuleException("Um usuário não pode atualizar um Pet de outro usuário");
+        }
 
         if (nonNull(petDTO.getName()) && !(petDTO.getName().equals(pet.getName()))) {
             pet.setName(petDTO.getName());
@@ -112,12 +112,19 @@ public class PetService implements IPetService {
             throw new BusinessRuleException("Usuário com esse token não existe.");
         }
 
-        if (userId != petRepository.findPetById(petId).getUser().getId()) {
+        Optional<Pet> optionalPet = petRepository.findById(petId);
+
+        if (optionalPet.isEmpty()) {
+            throw new BusinessRuleException("Impossível deletar um Pet inexistente.");
+        }
+
+        Pet pet = optionalPet.get();
+
+        if (userId != pet.getUser().getId()) {
             throw new BusinessRuleException("Um usuário não pode deletar um Pet de outro usuário");
         }
 
         petRepository.deleteById(petId);
-
     }
 
     @Override
@@ -146,7 +153,7 @@ public class PetService implements IPetService {
         return petRepository.findMyPets(userId);
     }
 
-    private void checkIfAlreadyExists(String name) {
+    public void checkIfAlreadyExists(String name) {
         BusinessRuleException businessRuleException = new BusinessRuleException("Requisição possui campos inválidos.");
 
         if (nonNull(name) && nonNull(petRepository.findPetByName(name))) {
