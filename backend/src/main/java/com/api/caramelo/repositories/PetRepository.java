@@ -9,8 +9,6 @@ import java.util.List;
 public interface PetRepository extends JpaRepository<Pet, Long> {
     Pet findPetByName(String name);
 
-    Pet findPetById(Long id);
-
     void deleteById(Long petId);
 
     @Query("select p from Pet p\n" +
