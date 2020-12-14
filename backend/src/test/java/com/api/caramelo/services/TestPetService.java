@@ -131,7 +131,7 @@ public class TestPetService {
         Mockito.when(petRepository.findById(1l)).thenReturn(Optional.of(pet));
         Mockito.when(userRepository.findById(1l)).thenReturn(Optional.of(user));
 
-        petService.delete(1l, 1l);
+        assertDoesNotThrow(() -> petService.delete(1l, 1l));
     }
 
     @Test
