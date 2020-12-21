@@ -38,8 +38,8 @@ public class DonationService implements IDonationService {
             throw new BusinessRuleException("Você não pode doar pro seu próprio pet.");
         }
 
-        Donation donation = donationRepository.save(new Donation());
+        Donation donation = Donation.builder().pet(pet).user(user).value(value).type(type).build();
 
-        return donation;
+        return donationRepository.save(donation);
     }
 }
