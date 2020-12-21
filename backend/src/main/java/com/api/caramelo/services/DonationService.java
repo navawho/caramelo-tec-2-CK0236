@@ -20,7 +20,26 @@ public class DonationService implements IDonationService {
 
     @Override
     public Donation create(Long petId, Long userId, Double value, DonationType type) {
-        // TO DO
-        return null;
+        Optional<Pet> optionalPet = petRepository.findById(petId);
+
+        if (optionalPet.isEmpty()) {
+            throw new BusinessRuleException("Pet inexistente.");
+        }
+        Pet pet = optionalPet.get();
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            throw new BusinessRuleException("User inexistente.");
+        }
+        User user = optionalUser.get();
+
+        if (pet.getUser() == user) {
+            throw new BusinessRuleException("Você não pode doar pro seu próprio pet.");
+        }
+
+        Donation donation = donationRepository.save(new Donation());
+
+        return donation;
     }
 }
