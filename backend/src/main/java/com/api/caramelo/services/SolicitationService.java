@@ -28,19 +28,27 @@ public class SolicitationService implements ISolicitationService {
 
     @Override
     public Solicitation create(Long userId, Long petId) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> optionalUser = userRepository.findById(userId);
 
-        if (user.isEmpty()) {
+        if (optionalUser.isEmpty()) {
             throw new BusinessRuleException("Usuário com esse token não existe.");
         }
 
-        Optional<Pet> pet = petRepository.findById(petId);
+        User user = optionalUser.get();
 
-        if (pet.isEmpty()) {
+        Optional<Pet> optionalPet = petRepository.findById(petId);
+
+        if (optionalPet.isEmpty()) {
             throw new BusinessRuleException("Pet não existe.");
         }
 
-        Solicitation solicitation = Solicitation.builder().user(user.get()).pet(pet.get()).build();
+        Pet pet = optionalPet.get();
+
+        if (pet.getUser() != user) {
+            throw new BusinessRuleException("Você não pode adotar seu próprio pet.");
+        }
+
+        Solicitation solicitation = Solicitation.builder().user(user).pet(pet).build();
 
         return solicitationRepository.save(solicitation);
     }
