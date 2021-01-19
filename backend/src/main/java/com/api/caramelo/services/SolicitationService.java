@@ -44,7 +44,7 @@ public class SolicitationService implements ISolicitationService {
 
         Pet pet = optionalPet.get();
 
-        if (pet.getUser() != user) {
+        if (pet.getUser() == user) {
             throw new BusinessRuleException("Você não pode adotar seu próprio pet.");
         }
 
