@@ -88,6 +88,7 @@ public class TestDonationService {
 
         assertEquals(exception.getMessage(), "Pet inexistente.");
     }
+
     @Test
     public void testUserThatDoesNotExists() {
         Long petId = 1l;
