@@ -30,7 +30,7 @@ public class SessionController {
     public ResponseEntity store(@RequestBody SessionDTO sessionDTO) {
         try {
             Long userId = service.validateCredentials(sessionDTO.getUsername(), sessionDTO.getPassword());
-            User user = service.loggedUser(userId);
+            User user = service.getLoggedUser(userId);
 
             Map<String, Object> map = new HashMap<>();
             map.put("user", user);

@@ -33,11 +33,11 @@ public class SessionService implements ISessionService {
     }
 
     @Override
-    public User loggedUser(Long userId) {
+    public User getLoggedUser(Long userId) {
         Optional<User> optionalUser = repository.findById(userId);
 
         if (optionalUser.isEmpty()) {
-            throw new BusinessRuleException("Usuário com esse token não existe.");
+            throw new BusinessRuleException("Usuário não existe.");
         }
 
         return optionalUser.get();
