@@ -16,10 +16,13 @@ import static java.util.Objects.nonNull;
 import static org.mindrot.jbcrypt.BCrypt.*;
 
 @Service
-@RequiredArgsConstructor
 public class UserService implements IUserService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+
+    private UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User create(CreateUserDTO userDTO) {
@@ -33,14 +36,14 @@ public class UserService implements IUserService {
                 .email(userDTO.getEmail())
                 .phone(userDTO.getPhone()).build();
 
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User update(UpdateUserDTO userDTO, Long userId) {
         this.checkIfAlreadyExists(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPhone());
 
-        Optional<User> optionalUser = repository.findById(userId);
+        Optional<User> optionalUser = userRepository.findById(userId);
 
         if (optionalUser.isEmpty()) {
             throw new BusinessRuleException("Usuário com esse token não existe.");
@@ -70,12 +73,12 @@ public class UserService implements IUserService {
             user.setPhone(userDTO.getPhone());
         }
 
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User search(Long userId) {
-        Optional<User> user = repository.findById(userId);
+        Optional<User> user = userRepository.findById(userId);
 
         if (user.isEmpty()) {
             throw new BusinessRuleException("Usuário com esse token não existe.");
@@ -86,13 +89,13 @@ public class UserService implements IUserService {
 
     @Override
     public void delete(Long userId) {
-        Optional<User> user = repository.findById(userId);
+        Optional<User> user = userRepository.findById(userId);
 
         if (user.isEmpty()) {
             throw new BusinessRuleException("Usuário não existe.");
         }
 
-        repository.delete(user.get());
+        userRepository.delete(user.get());
     }
 
     private String validateAndHashPassword(String password, String confirmPassword) {
@@ -106,15 +109,15 @@ public class UserService implements IUserService {
     private void checkIfAlreadyExists(String username, String email, String phone) {
         BusinessRuleException businessRuleException = new BusinessRuleException("Requisição possui campos inválidos.");
 
-        if (nonNull(username) && repository.findByUsername(username).isPresent()) {
+        if (nonNull(username) && userRepository.findByUsername(username).isPresent()) {
             businessRuleException.addError(new ErrorObject("Já existe usuário com esse Username.", "username", username));
         }
 
-        if (nonNull(email) && nonNull(repository.findByEmail(email))) {
+        if (nonNull(email) && nonNull(userRepository.findByEmail(email))) {
             businessRuleException.addError(new ErrorObject("Já existe usuário com esse E-mail.", "email", email));
         }
 
-        if (nonNull(phone) && nonNull(repository.findByPhone(phone))) {
+        if (nonNull(phone) && nonNull(userRepository.findByPhone(phone))) {
             businessRuleException.addError(new ErrorObject("Já existe usuário com esse Telefone.", "phone", phone));
         }
 
