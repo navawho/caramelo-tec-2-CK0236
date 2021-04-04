@@ -57,29 +57,37 @@ public class SolicitationService implements ISolicitationService {
     public Solicitation update(Long solicitationId, Boolean accepted) {
         Optional<Solicitation> solicitationOptional = solicitationRepository.findById(solicitationId);
 
-        if (solicitationOptional.isEmpty()) {
-            throw new BusinessRuleException("Solicitação não existe.");
-        }
+        this.checkIfSolicitationExists(solicitationOptional);
 
         Solicitation solicitation = solicitationOptional.get();
         solicitation.setAccepted(accepted);
 
         if (accepted) {
-            Adoption adoption = new Adoption();
-
-            Pet pet = solicitation.getPet();
-
-            adoption.setPet(pet);
-            adoption.setUser(solicitation.getUser());
-            adoption.setReturned(false);
-
-            pet.setAvailable(false);
-            petRepository.save(pet);
-
-            adoptionRepository.save(adoption);
+            this.createNewAdoption(solicitation);
         }
 
         return solicitationRepository.save(solicitation);
+    }
+
+    public void createNewAdoption(Solicitation solicitation) {
+        Adoption adoption = new Adoption();
+
+        Pet pet = solicitation.getPet();
+
+        adoption.setPet(pet);
+        adoption.setUser(solicitation.getUser());
+        adoption.setReturned(false);
+
+        pet.setAvailable(false);
+        petRepository.save(pet);
+
+        adoptionRepository.save(adoption);
+    }
+
+    public void checkIfSolicitationExists(Optional<Solicitation> solicitationOptional) {
+        if (solicitationOptional.isEmpty()) {
+            throw new BusinessRuleException("Solicitação não existe.");
+        }
     }
 
     @Override

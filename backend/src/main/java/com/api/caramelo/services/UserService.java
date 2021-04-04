@@ -80,9 +80,7 @@ public class UserService implements IUserService {
     public User search(Long userId) {
         Optional<User> user = userRepository.findById(userId);
 
-        if (user.isEmpty()) {
-            throw new BusinessRuleException("Usuário com esse token não existe.");
-        }
+        this.checkIfUserExists(user);
 
         return user.get();
     }
@@ -91,11 +89,15 @@ public class UserService implements IUserService {
     public void delete(Long userId) {
         Optional<User> user = userRepository.findById(userId);
 
+        this.checkIfUserExists(user);
+
+        userRepository.delete(user.get());
+    }
+
+    private void checkIfUserExists(Optional<User> user) {
         if (user.isEmpty()) {
             throw new BusinessRuleException("Usuário não existe.");
         }
-
-        userRepository.delete(user.get());
     }
 
     private String validateAndHashPassword(String password, String confirmPassword) {
